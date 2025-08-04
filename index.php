@@ -1,16 +1,21 @@
 <?php
 
 require 'functions.php';
+require 'router.php';
 
-$uri = $_SERVER['REQUEST_URI'];
+// connect to our MySQL database.
 
-if ($uri === '/home') {
-    require './controllers/home.php';
-} else if ($uri === '/about') {
-    require './controllers/about.php';
-} else if ($uri === '/contact') {
-    require './controllers/contact.php';
-} else {
-    http_response_code(404);
-    require './views/404.view.php';
+$dsn = "mysql:host=localhost; port=3306; user=root; dbname=myapp; charset=utf8mb4";
+
+$pdo = new PDO($dsn);
+
+$statement = $pdo->prepare("SELECT * FROM posts");
+$statement->execute();
+
+$posts = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+//dd($posts);
+
+foreach ($posts as $post) {
+    echo "<li>" . $post['title'] . "</li>";
 }
